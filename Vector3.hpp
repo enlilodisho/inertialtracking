@@ -14,6 +14,10 @@ class Vector3
     Vector3(double x, double y, double z); // constructor
     double getMagnitude();
     String toString();
+
+    static double Dot(Vector3 vecA, Vector3 vecB);
+    static Vector3 Cross(Vector3 vecA, Vector3 vecB);
+    static double SqrMagnitude(Vector3 vec);
 };
 
 #endif /* VECTOR3_HPP */

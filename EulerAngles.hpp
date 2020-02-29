@@ -3,19 +3,20 @@
 
 #include <Arduino.h> // used only for Strings
 
-struct EulerAngles
+class EulerAngles
 {
-  double roll;
-  double pitch;
-  double yaw;  
-
-  EulerAngles(); // constructor
-  EulerAngles(double roll, double pitch, double yaw); // constructor
-  EulerAngles toDegrees();
-  EulerAngles toRadians();
-  String toString();
-  String toDegreesString();
-  String toRadiansString();
+  public:
+    double roll;
+    double pitch;
+    double yaw;  
+  
+    EulerAngles(); // constructor
+    EulerAngles(double roll, double pitch, double yaw); // constructor
+    EulerAngles toDegrees();
+    EulerAngles toRadians();
+    String toString();
+    String toDegreesString();
+    String toRadiansString();
 };
 
 #endif /* EULER_ANGLES_HPP */
