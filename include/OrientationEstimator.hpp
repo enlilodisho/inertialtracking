@@ -14,7 +14,7 @@ class OrientationEstimator {
         void onGyroscopeData(Vector3 data);
 
         // Getters
-        Quaternion getOrientation;
+        Quaternion getOrientation();
     private:
         Quaternion orientation; // current orientation as a quaternion
 };
