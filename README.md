@@ -1,4 +1,4 @@
-# Inertial Tracking for Arduino (WIP)
+# Inertial Tracking for Raspberry Pi (WIP)
 - Using a LSM9DS1 module.
 
 **NOTICE! This is an experiment and not something that you can easily implement in your project.**
