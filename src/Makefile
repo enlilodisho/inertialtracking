@@ -4,7 +4,7 @@
 IDIR =../include
 CC=gcc
 CXX=g++
-CPPFLAGS=-I$(IDIR)
+CPPFLAGS=-I$(IDIR) -Wall
 
 ODIR=../obj
 LDIR =../lib
@@ -15,15 +15,18 @@ LIBS=-lm
 _DEPS = 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = InertialTracking.o
+_OBJ = LSM9DS1.o InertialTracking.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
+InertialTracking: $(OBJ)
+		$(CXX) -o $(patsubst %,$(BDIR)/%,$@) $^ $(CPPFLAGS) $(LIBS)
+
+$(ODIR)/LSM9DS1.o:
+		cd $(IDIR)/LSM9DS1-RPI && make LSM9DS1.o
+		cp $(IDIR)/LSM9DS1-RPI/LSM9DS1.o $(ODIR)/LSM9DS1.o
 
 $(ODIR)/%.o: %.cpp $(DEPS)
-		$(CXX) -c -o $@ $< $(CFLAGS)
-
-InertialTracking: $(OBJ)
-		$(CXX) -o $(patsubst %,$(BDIR)/%,$@) $^ $(CFLAGS) $(LIBS)
+		$(CXX) -c -o $@ $< $(CPPFLAGS)
 
 .PHONY: clean
 
