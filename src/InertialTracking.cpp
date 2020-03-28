@@ -41,15 +41,20 @@ int main(int argc, char * argv[]) {
         std::cout << "TEMP: " << ((lsm.is_temp_available(status) == true) ? "true" : "false") << std::endl;
         std::cout << std::endl;*/
 
+        bool gyroAvail = lsm.is_gyro_available(status);
+        if (gyroAvail == true) {
+            struct SensorData gyro = lsm.get_angular_rate();
+            printf("gyro: %d, %d, %d\n", gyro.x, gyro.y, gyro.z);
+        } else {
+            //std::cout << "gyro: WAIT\n";
+        }
+
         bool accAvail = lsm.is_acc_available(status);
         if (accAvail == true) {
-            //std::cout << "ACC: true" << std::endl;
-            //std::cout << "getLinearAcc" << std::endl;
             struct SensorData acc = lsm.get_linear_acc();
             printf("acc: %d, %d, %d\n", acc.x, acc.y, acc.z);
-            //std::cout << " done\n";
         } else {
-            std::cout << "waiting new data...\n";
+            //std::cout << "acc: WAIT\n";
         }
 
         i++;
