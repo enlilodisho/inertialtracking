@@ -4,7 +4,7 @@
 IDIR =../include
 CC=gcc
 CXX=g++
-CPPFLAGS=-I$(IDIR) -Wall
+CPPFLAGS=-I$(IDIR) -Wall -std=c++11
 
 ODIR=../obj
 LDIR =../lib
@@ -12,7 +12,7 @@ BDIR =../bin
 
 LIBS=-lm
 
-_DEPS = 
+_DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = LSM9DS1.o InertialTracking.o
@@ -32,4 +32,5 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 
 clean:
 		rm -f $(ODIR)/*.o $(BDIR)/* *~ core $(INCDIR)/*~
+		cd $(IDIR)/LSM9DS1-RPI && make clean
 
