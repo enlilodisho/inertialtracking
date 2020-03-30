@@ -10,12 +10,12 @@ ODIR=../obj
 LDIR =../lib
 BDIR =../bin
 
-LIBS=-lm
+LIBS=-lm -lpthread
 
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = LSM9DS1.o InertialTracking.o
+_OBJ = LSM9DS1.o main.o INS.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 InertialTracking: $(OBJ)
