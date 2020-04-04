@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "Quaternion.hpp"
+#include <math.h>
 
 /**
  * Constructor 1.
@@ -48,4 +49,31 @@ Quaternion& Quaternion::operator*=(const Quaternion& q2) {
     double newZ = w*q2.z + x*q2.y - y*q2.x + z*q2.w;
     w = newW; x = newX; y = newY; z = newZ;
     return *this;
+}
+
+/**
+ * Calculate and Return euler angles for this quaternion.
+ */
+EulerAngles Quaternion::toEulerAngles() {
+    struct EulerAngles angles;
+
+    // pitch
+    double sinr_cosp = 2*(w*x + y*z);
+    double cosr_cosp = 1 - 2*(x*x + y*y);
+    angles.pitch = atan2(sinr_cosp, cosr_cosp);
+
+    // roll
+    double sinp = 2*(w*y - z*x);
+    if (abs(sinp) >= 1) {
+        angles.roll = copysign(M_PI / 2.0, sinp);
+    } else {
+        angles.roll = asin(sinp);
+    }
+
+    // yaw
+    double siny_cosp = 2*(w*z + x*y);
+    double cosy_cosp = 1 - 2*(y*y + z*z);
+    angles.yaw = atan2(siny_cosp, cosy_cosp);
+
+    return angles;
 }

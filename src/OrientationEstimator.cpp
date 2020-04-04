@@ -68,8 +68,17 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     // Integrate
     orientation *= rotQuat;
 
-    printf("Orientation quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
-            orientation.x, orientation.y, orientation.z);
+    /*printf("Orientation quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
+            orientation.x, orientation.y, orientation.z);*/
+
+    struct EulerAngles orientationAngles = orientation.toEulerAngles();
+    // convert to degrees
+    orientationAngles.pitch *= 180/M_PI;
+    orientationAngles.roll  *= 180/M_PI;
+    orientationAngles.yaw   *= 180/M_PI;
+    printf("Orientation euler: pitch=%f, roll=%f, yaw=%f\n",
+            orientationAngles.pitch, orientationAngles.roll,
+            orientationAngles.yaw);
 }
 
 /**
