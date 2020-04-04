@@ -95,6 +95,7 @@ int main(int argc, char * argv[]) {
         uint8_t numUnreadInFIFO = lsm.get_num_fifo_unread(fifoStatus);
         if (numUnreadInFIFO > 0) {
             struct SensorData gyro = lsm.get_angular_rate();
+            lsm.get_linear_acc();
             gyroCalibration.x += gyro.x;
             gyroCalibration.y += gyro.y;
             gyroCalibration.z += gyro.z;
@@ -109,6 +110,9 @@ int main(int argc, char * argv[]) {
             gyroCalibration.x, gyroCalibration.y, gyroCalibration.z);
 
     std::cout << "DONE SETTING UP EVERYTHING!\n";
+
+    // Start the INS
+    ins.start();
 
     // start read data loop on new thread 
     std::thread imu_data_update_thread (loop);
@@ -147,8 +151,8 @@ void loop() {
         accY *= SENSITIVITY_ACCELEROMETER_4;
         accZ *= SENSITIVITY_ACCELEROMETER_4;
 
-        ins.onGyroscopeData(gyroX, gyroY, gyroZ);
-        ins.onAccelerometerData(accX, accY, accZ);
+        ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/59.5)*1000000000));
+        ins.onAccelerometerData(accX, accY, accZ, ((1/59.5)*1000000000));
     }
 
     if (i++ < 10000) {

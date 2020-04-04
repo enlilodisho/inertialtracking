@@ -24,28 +24,93 @@
 /**
  * Constructor for INS.
  */
-INS::INS() {}
+INS::INS() : active(false) {}
 
 /**
  * Destructor for INS.
  */
-INS::~INS() {}
+INS::~INS() {
+    active = false;
+    std::cout << "DESTROYED INS\n";
+}
+
+/**
+ * Start the INS thread.
+ */
+void INS::start() {
+    active = true;
+    std::thread insThread(&INS::loop, this);
+    insThread.detach();
+}
+
+/**
+ * Dequeue and process data.
+ */
+void INS::loop() {
+    while (true) {
+        if (active == false) {
+            break;
+        }
+
+        queueMtx.lock();
+
+        // Check queue sizes.
+        int gyroQueueSize = gyroQueue.size();
+        int accQueueSize = accQueue.size();
+        if (gyroQueueSize == 0 || (gyroQueueSize == 1 && accQueueSize == 0)) {
+            queueMtx.unlock();
+            // Queue empty or data has not fully been received yet.
+            if (active == true) {
+                continue;
+            }
+            break;
+        }
+        //printf("GYRO.size = %d ; ACC.size = %d\n", gyroQueueSize, accQueueSize);
+
+        struct QueueNode* gyroNode = gyroQueue.front();
+        gyroQueue.pop_front();
+        struct QueueNode* accNode = accQueue.front();
+        accQueue.pop_front();
+
+        queueMtx.unlock();
+    }
+}
 
 /**
  * Event Handler for when received accelerometer data.
  */
-void INS::onAccelerometerData(double x, double y, double z) {
-    printf("acc: %f, %f, %f\n", x, y, z);
+void INS::onAccelerometerData(double x, double y, double z, double dt_ns) {
+    //printf("acc: %f, %f, %f, dt_ns: %f\n", x, y, z, dt_ns);
+
+    struct QueueNode* accNode = new struct QueueNode;
+    accNode->x = x;
+    accNode->y = y;
+    accNode->z = z;
+    accNode->dt_ns = dt_ns;
+
+    queueMtx.lock();
+    accQueue.push_back(accNode);
+    queueMtx.unlock();
 }
 
 /**
  * Event Handler for when received gyroscope data.
  */
-void INS::onGyroscopeData(double pitch, double roll, double yaw) {
-    printf("gyro: %f, %f, %f\n", pitch, roll, yaw);
+void INS::onGyroscopeData(double pitch, double roll, double yaw, double dt_ns) {
+    //printf("gyro: %f, %f, %f, dt_ns: %f\n", pitch, roll, yaw, dt_ns);
+
+    struct QueueNode* gyroNode = new struct QueueNode;
+    gyroNode->x = pitch;
+    gyroNode->y = roll;
+    gyroNode->z = yaw;
+    gyroNode->dt_ns = dt_ns;
+
+    queueMtx.lock();
+    gyroQueue.push_back(gyroNode);
+    queueMtx.unlock();
 }
 
 /**
  * Event Handler for when received magnetometer data.
  */
-void INS::onMagnetometerData(double x, double y, double z) {}
+void INS::onMagnetometerData(double x, double y, double z, double dt_ns) {}
