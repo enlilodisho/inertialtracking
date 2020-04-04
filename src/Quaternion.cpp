@@ -57,17 +57,17 @@ Quaternion& Quaternion::operator*=(const Quaternion& q2) {
 EulerAngles Quaternion::toEulerAngles() {
     struct EulerAngles angles;
 
-    // pitch
+    // roll
     double sinr_cosp = 2*(w*x + y*z);
     double cosr_cosp = 1 - 2*(x*x + y*y);
-    angles.pitch = atan2(sinr_cosp, cosr_cosp);
+    angles.roll = atan2(sinr_cosp, cosr_cosp);
 
-    // roll
+    // pitch
     double sinp = 2*(w*y - z*x);
     if (abs(sinp) >= 1) {
-        angles.roll = copysign(M_PI / 2.0, sinp);
+        angles.pitch = copysign(M_PI / 2.0, sinp);
     } else {
-        angles.roll = asin(sinp);
+        angles.pitch = asin(sinp);
     }
 
     // yaw
