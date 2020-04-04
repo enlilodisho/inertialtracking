@@ -67,7 +67,7 @@ int main(int argc, char * argv[]) {
     // Set acc scale
     lsm.set_a_scale(A_SCALE::A_SCALE_4);
     // Set gyro scale
-    lsm.set_g_scale(G_SCALE::G_SCALE_245);
+    lsm.set_g_scale(G_SCALE::G_SCALE_2000);
     // Enable the data-ready status registers
     //lsm.set_drdy_enable_bit(true);
     // Turn on FIFO buffer
@@ -143,9 +143,9 @@ void loop() {
 
         // Apply sensitivity constants
         double gyroX = gyro.x, gyroY = gyro.y, gyroZ = gyro.z;
-        gyroX *= SENSITIVITY_GYROSCOPE_245;
-        gyroY *= SENSITIVITY_GYROSCOPE_245;
-        gyroZ *= SENSITIVITY_GYROSCOPE_245;
+        gyroX *= SENSITIVITY_GYROSCOPE_2000;
+        gyroY *= SENSITIVITY_GYROSCOPE_2000;
+        gyroZ *= SENSITIVITY_GYROSCOPE_2000;
         double accX = acc.x, accY = acc.y, accZ = acc.z;
         accX *= SENSITIVITY_ACCELEROMETER_4;
         accY *= SENSITIVITY_ACCELEROMETER_4;
@@ -155,7 +155,7 @@ void loop() {
         ins.onAccelerometerData(accX, accY, accZ, ((1/59.5)*1000000000));
     }
 
-    if (i++ < 50000) {
+    if (i++ < 100000) {
         loop();
     }
 }

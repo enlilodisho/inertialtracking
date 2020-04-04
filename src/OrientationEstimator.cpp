@@ -83,7 +83,7 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     double normYaw   = yaw / gyroMag;
     
     // Convert mesasurements to instantaneous rotation quaternion
-    double theta = gyroMag * dt_s * (M_PI / 180.0);
+    double theta = gyroMag * dt_s * (M_PI / (180.0*2));
     /*printf("normPitch=%f, normRoll=%f, normYaw=%f, theta=%f\n", normPitch,
             normRoll, normYaw, theta);*/
     Quaternion rotQuat(cos(theta/2.0), normRoll*sin(theta/2.0),
