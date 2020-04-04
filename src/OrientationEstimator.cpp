@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "OrientationEstimator.hpp"
+#include <math.h>
+#include <iostream>
 
 /**
  * Constructor for OrientationEstimator.
@@ -42,7 +44,32 @@ Quaternion OrientationEstimator::getOrientation() {
  * Should be called whenever received gyroscope data.
  */
 void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw, double dt_ns) {
-    // TODO
+    // Get delta time in seconds.
+    double dt_s = dt_ns / 1000000000;
+
+    // Perform Gyro Integration using Quaternions //
+    
+    // Get magnitude of gyro data.
+    double gyroMag = sqrt(pitch*pitch + roll*roll + yaw*yaw);
+    if (gyroMag == 0) {
+        // No movement detected.
+        return;
+    }
+    // Normalize gyro data.
+    double normPitch = pitch / gyroMag;
+    double normRoll  = roll / gyroMag;
+    double normYaw   = yaw / gyroMag;
+    
+    // Convert mesasurements to instantaneous rotation quaternion
+    double theta = gyroMag * dt_s;
+    Quaternion rotQuat(cos(theta/2.0), normPitch*sin(theta/2.0),
+            normRoll*sin(theta/2.0), normYaw*sin(theta/2.0));
+
+    // Integrate
+    orientation *= rotQuat;
+
+    printf("Orientation quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
+            orientation.x, orientation.y, orientation.z);
 }
 
 /**

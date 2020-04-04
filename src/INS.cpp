@@ -73,6 +73,12 @@ void INS::loop() {
         accQueue.pop_front();
 
         queueMtx.unlock();
+
+        orientationEstimator.onGyroscopeData(gyroNode->x, gyroNode->y,
+                gyroNode->z, gyroNode->dt_ns);
+
+        delete gyroNode;
+        delete accNode;
     }
 }
 
