@@ -24,3 +24,28 @@
  * Constructor 1.
  */
 Quaternion::Quaternion() : w(1.0), x(0.0), y(0.0), z(0.0) {}
+
+/**
+ * Constructor 2.
+ */
+Quaternion::Quaternion(double w, double x, double y, double z) : w(w), x(x), y(y), z(z) {}
+
+/**
+ * Quaternion multiplication operator overload.
+ */
+Quaternion Quaternion::operator*(const Quaternion& q2) {
+    double newW = w*q2.w - x*q2.x - y*q2.y - z*q2.z;
+    double newX = w*q2.x + x*q2.w + y*q2.z - z*q2.y;
+    double newY = w*q2.y - x*q2.z + y*q2.w + z*q2.x;
+    double newZ = w*q2.z + x*q2.y - y*q2.x + z*q2.w;
+    Quaternion qR(newW, newX, newY, newZ);
+    return qR;
+}
+Quaternion& Quaternion::operator*=(const Quaternion& q2) {
+    double newW = w*q2.w - x*q2.x - y*q2.y - z*q2.z;
+    double newX = w*q2.x + x*q2.w + y*q2.z - z*q2.y;
+    double newY = w*q2.y - x*q2.z + y*q2.w + z*q2.x;
+    double newZ = w*q2.z + x*q2.y - y*q2.x + z*q2.w;
+    w = newW; x = newX; y = newY; z = newZ;
+    return *this;
+}

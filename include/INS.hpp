@@ -4,6 +4,7 @@
 #include <deque>
 #include <thread>
 #include <mutex>
+#include "OrientationEstimator.hpp"
 
 class INS {
     public:
@@ -29,6 +30,8 @@ class INS {
         };
         std::deque<struct QueueNode*> gyroQueue;
         std::deque<struct QueueNode*> accQueue;
+
+        OrientationEstimator orientationEstimator;
 };
 
 #endif /* INERTIAL_NAVIGATION_SYSTEM_HPP */

@@ -38,27 +38,19 @@ Quaternion OrientationEstimator::getOrientation() {
 }
 
 /**
- * Update estimate with accelerometer data.
- * Should be called whenever received accelerometer data.
+ * Update estimate with gyroscope data.
+ * Should be called whenever received gyroscope data.
  */
-void OrientationEstimator::onAccelerometerData(Vector3 data) {
-    // Can't use accelerometer for orientation for rockets.
+void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw, double dt_ns) {
+    // TODO
 }
 
 /**
  * Update estimate with magnetometer data.
  * Should be called whenever received magnetometer data.
  */
-void OrientationEstimator::onMagnetometerData(Vector3 data) {
+void OrientationEstimator::onMagnetometerData(double x, double y, double z, double dt_ns) {
     // TODO more research required to see if we can use magnetometer data
     // for orientation on rockets.
-}
-
-/**
- * Update estimate with gyroscope data.
- * Should be called whenever received gyroscope data.
- */
-void OrientationEstimator::onGyroscopeData(Vector3 data) {
-    // TODO
 }
 

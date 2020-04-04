@@ -9,9 +9,8 @@ class OrientationEstimator {
         ~OrientationEstimator();  // destructor
 
         // Event Handlers
-        void onAccelerometerData(Vector3 data);
-        void onMagnetometerData(Vector3 data);
-        void onGyroscopeData(Vector3 data);
+        void onGyroscopeData(double pitch, double roll, double yaw, double dt_ns);
+        void onMagnetometerData(double x, double y, double z, double dt_ns);
 
         // Getters
         Quaternion getOrientation();
