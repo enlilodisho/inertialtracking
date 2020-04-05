@@ -63,7 +63,7 @@ int main(int argc, char * argv[]) {
     /* Set up LSM9SD1 */
     std::cout << "Setting up LSM9DS1...\n";
     // Set ODR rate for acc & gyro
-    lsm.set_ag_odr(AG_ODR::AG_ODR_59_5); // settings faster than 238Hz are too fast for rpi
+    lsm.set_ag_odr(AG_ODR::AG_ODR_119); // settings faster than 238Hz are too fast for rpi
     // Set acc scale
     lsm.set_a_scale(A_SCALE::A_SCALE_4);
     // Set gyro scale
@@ -74,9 +74,9 @@ int main(int argc, char * argv[]) {
     lsm.set_fifo_enable_bit(true); // Enable FIFO feature
     lsm.set_fifo_mode(FIFO_MODE_BYPASS); // Reset FIFO buffer contents
     lsm.set_fifo_mode(FIFO_MODE_ON); // Use regular FIFO mode. WARNING: If buffer gets full, output will stop until reset!
-    // Throw away 500 samples.
+    // Throw away 1500 samples.
     int numSamplesRead = 0;
-    while (numSamplesRead < 500) {
+    while (numSamplesRead < 1500) {
         BYTE fifoStatus = lsm.get_fifo_status();
         uint8_t numUnreadInFIFO = lsm.get_num_fifo_unread(fifoStatus);
         if (numUnreadInFIFO > 0) {
@@ -151,8 +151,8 @@ void loop() {
         accY *= SENSITIVITY_ACCELEROMETER_4;
         accZ *= SENSITIVITY_ACCELEROMETER_4;
 
-        ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/59.5)*1000000000));
-        ins.onAccelerometerData(accX, accY, accZ, ((1/59.5)*1000000000));
+        ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/119.0)*1000000000));
+        ins.onAccelerometerData(accX, accY, accZ, ((1/119.0)*1000000000));
     }
 
     if (i++ < 100000) {
