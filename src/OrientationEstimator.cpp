@@ -96,6 +96,9 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     // Integrate
     orientation *= rotQuat;
 
+    // Make sure orientation quat is normalized.
+    orientation = orientation.normalize();
+
     /*printf("quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
             orientation.x, orientation.y, orientation.z);*/
 

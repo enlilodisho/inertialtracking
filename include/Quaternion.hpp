@@ -26,6 +26,7 @@ class Quaternion {
 
         // Operations
         Quaternion conjugate();
+        Quaternion normalize();
         double norm_squared();
         Quaternion inverse();
 

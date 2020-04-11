@@ -100,6 +100,19 @@ Quaternion Quaternion::conjugate() {
 }
 
 /**
+ * Returns the normalized quaternion.
+ */
+Quaternion Quaternion::normalize() {
+    double norm = sqrt(norm_squared());
+    double newW = w/norm;
+    double newX = x/norm;
+    double newY = y/norm;
+    double newZ = z/norm;
+    Quaternion qR(newW, newX, newY, newZ);
+    return qR;
+}
+
+/**
  * Returns the square of the norm of the Quaternion.
  */
 double Quaternion::norm_squared() {
