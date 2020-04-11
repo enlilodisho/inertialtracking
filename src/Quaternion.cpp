@@ -52,6 +52,68 @@ Quaternion& Quaternion::operator*=(const Quaternion& q2) {
 }
 
 /**
+ * Quaternion division operator overload.
+ */
+Quaternion Quaternion::operator/(double k) {
+    double newW = w / k;
+    double newX = x / k;
+    double newY = y / k;
+    double newZ = z / k;
+    Quaternion qR(newW, newX, newY, newZ);
+    return qR;
+}
+Quaternion& Quaternion::operator/=(double k) {
+    w /= k;
+    x /= k;
+    y /= k;
+    z /= k;
+    return *this;
+}
+Quaternion Quaternion::operator/(const Quaternion& q2) {
+    double n2 = norm_squared();
+    double newW = (w*q2.w + x*q2.x + y*q2.y + z*q2.z)  / n2;
+    double newX = (-w*q2.x + x*q2.w - y*q2.z + z*q2.y) / n2;
+    double newY = (-w*q2.y + x*q2.z + y*q2.w - z*q2.x) / n2;
+    double newZ = (-w*q2.z - x*q2.y + y*q2.x + z*q2.w) / n2;
+    Quaternion qR(newW, newX, newY, newZ);
+    return qR;
+}
+Quaternion& Quaternion::operator/=(const Quaternion& q2) {
+    double n2 = norm_squared();
+    double newW = (w*q2.w + x*q2.x + y*q2.y + z*q2.z)  / n2;
+    double newX = (-w*q2.x + x*q2.w - y*q2.z + z*q2.y) / n2;
+    double newY = (-w*q2.y + x*q2.z + y*q2.w - z*q2.x) / n2;
+    double newZ = (-w*q2.z - x*q2.y + y*q2.x + z*q2.w) / n2;
+    w = newW; x = newX; y = newY; z = newZ;
+    return *this;
+}
+
+/**
+ * Returns the conjugate of this quaternion.
+ */
+Quaternion Quaternion::conjugate() {
+    double newX = -x;
+    double newY = -y;
+    double newZ = -z;
+    Quaternion qC(w, newX, newY, newZ);
+    return qC;
+}
+
+/**
+ * Returns the square of the norm of the Quaternion.
+ */
+double Quaternion::norm_squared() {
+    return w*w + x*x + y*y +z*z;
+}
+
+/**
+ * Returns the inverse of this quaternion.
+ */
+Quaternion Quaternion::inverse() {
+    return conjugate() / norm_squared();
+}
+
+/**
  * Calculate and Return euler angles for this quaternion.
  */
 EulerAngles Quaternion::toEulerAngles() {

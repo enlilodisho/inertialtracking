@@ -18,6 +18,16 @@ class Quaternion {
         // Multiplication
         Quaternion operator*(const Quaternion& q2);
         Quaternion& operator*=(const Quaternion& q2);
+        // Division
+        Quaternion operator/(double k);
+        Quaternion& operator/=(double k);
+        Quaternion operator/(const Quaternion& q2);
+        Quaternion& operator/=(const Quaternion& q2);
+
+        // Operations
+        Quaternion conjugate();
+        double norm_squared();
+        Quaternion inverse();
 
         // Conversions
         EulerAngles toEulerAngles();

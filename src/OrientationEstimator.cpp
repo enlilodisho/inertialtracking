@@ -60,14 +60,15 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
 
     ///////////////////////////////
     // Old method using euler angles:
+    /*
     static struct EulerAngles prevAngles;
     static struct EulerAngles eulerOrientation;
     struct EulerAngles rotAngles;
     rotAngles.pitch = ((pitch + prevAngles.pitch) / 2.0) * dt_s;
     rotAngles.roll  = ((roll  + prevAngles.roll ) / 2.0) * dt_s;
     rotAngles.yaw   = ((yaw   + prevAngles.yaw  ) / 2.0) * dt_s;
-    /*printf("Rot angles: pitch=%f, roll%f, yaw=%f\n", rotAngles.pitch,
-            rotAngles.roll, rotAngles.yaw);*/
+    //printf("Rot angles: pitch=%f, roll%f, yaw=%f\n", rotAngles.pitch,
+    //        rotAngles.roll, rotAngles.yaw);
     
     eulerOrientation.pitch += rotAngles.pitch;
     eulerOrientation.roll  += rotAngles.roll;
@@ -75,6 +76,7 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     printf("euler: pitch=%f, roll=%f, yaw=%f\n",
             eulerOrientation.pitch, eulerOrientation.roll,
             eulerOrientation.yaw);
+    */
     ///////////////////////////////
     
     // Normalize gyro data.
@@ -94,9 +96,10 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     // Integrate
     orientation *= rotQuat;
 
-    printf("quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
-            orientation.x, orientation.y, orientation.z);
+    /*printf("quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
+            orientation.x, orientation.y, orientation.z);*/
 
+    /*
     struct EulerAngles orientationAngles = orientation.toEulerAngles();
     // convert to degrees
     orientationAngles.pitch *= 180/M_PI;
@@ -105,7 +108,7 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     printf("quat in euler: pitch=%f, roll=%f, yaw=%f\n",
             orientationAngles.pitch, orientationAngles.roll,
             orientationAngles.yaw);
-    printf("\n");
+    printf("\n");*/
 }
 
 /**

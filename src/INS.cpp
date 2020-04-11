@@ -20,6 +20,7 @@
  */
 #include <iostream>
 #include "INS.hpp"
+#include <math.h> //temp
 
 /**
  * Constructor for INS.
@@ -74,8 +75,26 @@ void INS::loop() {
 
         queueMtx.unlock();
 
+        // Get the orientation of the device.
         orientationEstimator.onGyroscopeData(gyroNode->x, gyroNode->y,
                 gyroNode->z, gyroNode->dt_ns);
+
+        // Transform acceleration from sensor-frame to world-frame.
+        Quaternion orientation = orientationEstimator.getOrientation();
+        struct EulerAngles orientationAngles = orientation.toEulerAngles();
+        /*
+        orientationAngles.pitch *= 180/M_PI;
+        orientationAngles.roll  *= 180/M_PI;
+        orientationAngles.yaw   *= 180/M_PI;
+        printf("%f,%f,%f\n", orientationAngles.pitch, orientationAngles.roll, orientationAngles.yaw);*/
+        printf("%f,%f,%f -> ", accNode->x, accNode->y, accNode->z);
+
+        Quaternion qAcc(0, accNode->x, accNode->y, accNode->z);
+        Quaternion qAccWorld = orientation*qAcc*orientation.inverse();
+        accNode->x = qAccWorld.x;
+        accNode->y = qAccWorld.y;
+        accNode->z = qAccWorld.z;
+        printf("%f,%f,%f\n", accNode->x, accNode->y, accNode->z);
 
         delete gyroNode;
         delete accNode;
