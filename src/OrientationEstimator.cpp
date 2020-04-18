@@ -88,8 +88,8 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     double theta = gyroMag * dt_s * (M_PI / (180.0*2));
     /*printf("normPitch=%f, normRoll=%f, normYaw=%f, theta=%f\n", normPitch,
             normRoll, normYaw, theta);*/
-    Quaternion rotQuat(cos(theta/2.0), normRoll*sin(theta/2.0),
-            normPitch*sin(theta/2.0), normYaw*sin(theta/2.0));
+    Quaternion rotQuat(cos(theta/2.0), normPitch*sin(theta/2.0),
+            normRoll*sin(theta/2.0), normYaw*sin(theta/2.0));
     /*printf("Rot quat: w=%f, x=%f, y=%f, z=%f\n", rotQuat.w, rotQuat.x,
             rotQuat.y, rotQuat.z);*/
 

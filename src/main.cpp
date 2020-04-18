@@ -128,34 +128,34 @@ int main(int argc, char * argv[]) {
 void loop() {
     static int i = 0;
 
-    BYTE fifoStatus = lsm.get_fifo_status();
-    uint8_t numUnreadInFIFO = lsm.get_num_fifo_unread(fifoStatus);
-    if (numUnreadInFIFO > 0) {
-        struct SensorData gyro  = lsm.get_angular_rate(); // ALWAYS READ GYRO DATA FIRST
-        struct SensorData acc   = lsm.get_linear_acc();   // ALWAYS READ ACC  DATA SECOND
+    while (i++ < 100000) {
 
-        // Apply calibration offsets
-        gyro.x -= gyroCalibration.x;
-        gyro.y -= gyroCalibration.y;
-        gyro.z -= gyroCalibration.z;
+        BYTE fifoStatus = lsm.get_fifo_status();
+        uint8_t numUnreadInFIFO = lsm.get_num_fifo_unread(fifoStatus);
+        if (numUnreadInFIFO > 0) {
+            struct SensorData gyro  = lsm.get_angular_rate(); // ALWAYS READ GYRO DATA FIRST
+            struct SensorData acc   = lsm.get_linear_acc();   // ALWAYS READ ACC  DATA SECOND
 
-        //printf("acc:%d,%d,%d ; gyro:%d,%d,%d\n", acc.x, acc.y, acc.z, gyro.x, gyro.y, gyro.z);
+            // Apply calibration offsets
+            gyro.x -= gyroCalibration.x;
+            gyro.y -= gyroCalibration.y;
+            gyro.z -= gyroCalibration.z;
 
-        // Apply sensitivity constants
-        double gyroX = gyro.x, gyroY = gyro.y, gyroZ = gyro.z;
-        gyroX *= SENSITIVITY_GYROSCOPE_2000;
-        gyroY *= SENSITIVITY_GYROSCOPE_2000;
-        gyroZ *= SENSITIVITY_GYROSCOPE_2000;
-        double accX = acc.x, accY = acc.y, accZ = acc.z;
-        accX *= SENSITIVITY_ACCELEROMETER_4;
-        accY *= SENSITIVITY_ACCELEROMETER_4;
-        accZ *= SENSITIVITY_ACCELEROMETER_4;
+            //printf("acc:%d,%d,%d ; gyro:%d,%d,%d\n", acc.x, acc.y, acc.z, gyro.x, gyro.y, gyro.z);
 
-        ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/119.0)*1000000000));
-        ins.onAccelerometerData(accX, accY, accZ, ((1/119.0)*1000000000));
-    }
+            // Apply sensitivity constants
+            double gyroX = gyro.x, gyroY = gyro.y, gyroZ = gyro.z;
+            gyroX *= SENSITIVITY_GYROSCOPE_2000;
+            gyroY *= SENSITIVITY_GYROSCOPE_2000;
+            gyroZ *= SENSITIVITY_GYROSCOPE_2000;
+            double accX = acc.x, accY = acc.y, accZ = acc.z;
+            accX *= SENSITIVITY_ACCELEROMETER_4;
+            accY *= SENSITIVITY_ACCELEROMETER_4;
+            accZ *= SENSITIVITY_ACCELEROMETER_4;
 
-    if (i++ < 100000) {
-        loop();
+            ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/119.0)*1000000000));
+            ins.onAccelerometerData(accX, accY, accZ, ((1/119.0)*1000000000));
+        }
+
     }
 }
