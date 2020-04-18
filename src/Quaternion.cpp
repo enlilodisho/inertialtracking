@@ -133,12 +133,12 @@ EulerAngles Quaternion::toEulerAngles() {
     struct EulerAngles angles;
 
     // roll
-    double sinr_cosp = 2*(w*y + x*z);
-    double cosr_cosp = 1 - 2*(y*y + x*x);
+    double sinr_cosp = 2*(w*x + y*z);
+    double cosr_cosp = 1 - 2*(x*x + y*y);
     angles.roll = atan2(sinr_cosp, cosr_cosp);
 
     // pitch
-    double sinp = 2*(w*x - z*y);
+    double sinp = 2*(w*y - z*x);
     if (abs(sinp) >= 1) {
         angles.pitch = copysign(M_PI / 2.0, sinp);
     } else {
@@ -146,8 +146,8 @@ EulerAngles Quaternion::toEulerAngles() {
     }
 
     // yaw
-    double siny_cosp = 2*(w*z + y*x);
-    double cosy_cosp = 1 - 2*(x*x + z*z);
+    double siny_cosp = 2*(w*z + x*y);
+    double cosy_cosp = 1 - 2*(y*y + z*z);
     angles.yaw = atan2(siny_cosp, cosy_cosp);
 
     return angles;

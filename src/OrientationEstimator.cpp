@@ -53,7 +53,7 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     
     // Get magnitude of gyro data.
     double gyroMag = sqrt(pitch*pitch + roll*roll + yaw*yaw);
-    if (gyroMag < 0.3) {
+    if (gyroMag == 0) {
         // No movement detected.
         return;
     }
@@ -85,11 +85,11 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
     double normYaw   = yaw / gyroMag;
     
     // Convert mesasurements to instantaneous rotation quaternion
-    double theta = gyroMag * dt_s * (M_PI / (180.0*2));
+    double theta = gyroMag * dt_s * (M_PI / (180.0));
     /*printf("normPitch=%f, normRoll=%f, normYaw=%f, theta=%f\n", normPitch,
             normRoll, normYaw, theta);*/
-    Quaternion rotQuat(cos(theta/2.0), normPitch*sin(theta/2.0),
-            normRoll*sin(theta/2.0), normYaw*sin(theta/2.0));
+    Quaternion rotQuat(cos(theta/2.0), normRoll*sin(theta/2.0),
+            normPitch*sin(theta/2.0), normYaw*sin(theta/2.0));
     /*printf("Rot quat: w=%f, x=%f, y=%f, z=%f\n", rotQuat.w, rotQuat.x,
             rotQuat.y, rotQuat.z);*/
 
@@ -98,20 +98,6 @@ void OrientationEstimator::onGyroscopeData(double pitch, double roll, double yaw
 
     // Make sure orientation quat is normalized.
     orientation = orientation.normalize();
-
-    /*printf("quat: w=%f, x=%f, y=%f, z=%f\n", orientation.w,
-            orientation.x, orientation.y, orientation.z);*/
-
-    /*
-    struct EulerAngles orientationAngles = orientation.toEulerAngles();
-    // convert to degrees
-    orientationAngles.pitch *= 180/M_PI;
-    orientationAngles.roll  *= 180/M_PI;
-    orientationAngles.yaw   *= 180/M_PI;
-    printf("quat in euler: pitch=%f, roll=%f, yaw=%f\n",
-            orientationAngles.pitch, orientationAngles.roll,
-            orientationAngles.yaw);
-    printf("\n");*/
 }
 
 /**

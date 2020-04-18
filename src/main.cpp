@@ -39,14 +39,14 @@
 #define SENSITIVITY_MAGNETOMETER_12  0.00043
 #define SENSITIVITY_MAGNETOMETER_16  0.00058
 
-/*
 template<class VECTOR3_T>
 struct Vector3 {
     VECTOR3_T x;
     VECTOR3_T y;
     VECTOR3_T z;
-};*/
-static struct SensorData gyroCalibration;
+};
+static Vector3<double> gyroCalibration;
+//static struct SensorData gyroCalibration;
 
 static LSM9DS1 lsm;
 static INS ins;
@@ -63,17 +63,18 @@ int main(int argc, char * argv[]) {
     /* Set up LSM9SD1 */
     std::cout << "Setting up LSM9DS1...\n";
     // Set ODR rate for acc & gyro
-    lsm.set_ag_odr(AG_ODR::AG_ODR_119); // settings faster than 238Hz are too fast for rpi
+    lsm.set_ag_odr(AG_ODR::AG_ODR_238); // settings faster than 238Hz are too fast for rpi
     // Set acc scale
     lsm.set_a_scale(A_SCALE::A_SCALE_4);
     // Set gyro scale
-    lsm.set_g_scale(G_SCALE::G_SCALE_2000);
+    lsm.set_g_scale(G_SCALE::G_SCALE_500);
     // Enable the data-ready status registers
     //lsm.set_drdy_enable_bit(true);
     // Turn on FIFO buffer
     lsm.set_fifo_enable_bit(true); // Enable FIFO feature
     lsm.set_fifo_mode(FIFO_MODE_BYPASS); // Reset FIFO buffer contents
-    lsm.set_fifo_mode(FIFO_MODE_ON); // Use regular FIFO mode. WARNING: If buffer gets full, output will stop until reset!
+    //lsm.set_fifo_mode(FIFO_MODE_ON); // Use regular FIFO mode. WARNING: If buffer gets full, output will stop until reset!
+    lsm.set_fifo_mode(FIFO_MODE_ON_CONTINUOUS);
     // Throw away 1500 samples.
     int numSamplesRead = 0;
     while (numSamplesRead < 1500) {
@@ -106,7 +107,7 @@ int main(int argc, char * argv[]) {
     gyroCalibration.x /= G_CALIBRATION_AMT;
     gyroCalibration.y /= G_CALIBRATION_AMT;
     gyroCalibration.z /= G_CALIBRATION_AMT;
-    printf("Gyro calibration result: %d,%d,%d\n",
+    printf("Gyro calibration result: %f,%f,%f\n",
             gyroCalibration.x, gyroCalibration.y, gyroCalibration.z);
 
     std::cout << "DONE SETTING UP EVERYTHING!\n";
@@ -145,16 +146,18 @@ void loop() {
 
             // Apply sensitivity constants
             double gyroX = gyro.x, gyroY = gyro.y, gyroZ = gyro.z;
-            gyroX *= SENSITIVITY_GYROSCOPE_2000;
-            gyroY *= SENSITIVITY_GYROSCOPE_2000;
-            gyroZ *= SENSITIVITY_GYROSCOPE_2000;
+            gyroX *= SENSITIVITY_GYROSCOPE_500;
+            gyroY *= SENSITIVITY_GYROSCOPE_500;
+            gyroZ *= SENSITIVITY_GYROSCOPE_500;
             double accX = acc.x, accY = acc.y, accZ = acc.z;
             accX *= SENSITIVITY_ACCELEROMETER_4;
             accY *= SENSITIVITY_ACCELEROMETER_4;
             accZ *= SENSITIVITY_ACCELEROMETER_4;
 
-            ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/119.0)*1000000000));
-            ins.onAccelerometerData(accX, accY, accZ, ((1/119.0)*1000000000));
+            ins.onGyroscopeData(gyroX, gyroY, gyroZ, ((1/238.0)*1000000000));
+            ins.onAccelerometerData(accX, accY, accZ, ((1/238.0)*1000000000));
+        } else {
+            //printf("Awaiting new data from sensor...\n");
         }
 
     }

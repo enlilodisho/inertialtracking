@@ -15,7 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <iostream>
 #include "INS.hpp"
@@ -86,13 +87,13 @@ void INS::loop() {
         orientationAngles.yaw   *= 180/M_PI;
         //printf("%f,%f,%f -> ", accNode->x, accNode->y, accNode->z);
 
-        Quaternion qAcc(0, accNode->x, accNode->y, accNode->z);
+        Quaternion qAcc(0, accNode->y, accNode->x, accNode->z);
         printf("Orientation: %f,%f,%f,%f ", orientation.w, orientation.x, orientation.y, orientation.z);
         printf("(%f,%f,%f)\n", orientationAngles.pitch, orientationAngles.roll, orientationAngles.yaw);
-        //Quaternion qAccWorld = orientation*qAcc*orientation.inverse();
-        Quaternion qAccWorld = orientation.inverse()*qAcc*orientation;
-        accNode->x = qAccWorld.x;
-        accNode->y = qAccWorld.y;
+        Quaternion qAccWorld = orientation*qAcc*orientation.inverse();
+        //Quaternion qAccWorld = orientation.inverse()*qAcc*orientation;
+        accNode->x = qAccWorld.y;
+        accNode->y = qAccWorld.x;
         accNode->z = qAccWorld.z;
         printf("Acc: %f,%f,%f,%f -> ", qAcc.w, qAcc.x, qAcc.y, qAcc.z);
         printf("%f,%f,%f,%f\n", qAccWorld.w, qAccWorld.x, qAccWorld.y, qAccWorld.z);
