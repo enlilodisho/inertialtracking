@@ -26,17 +26,6 @@
 Vector3Integrator::Vector3Integrator() {
     result = { x: 0.0, y: 0.0, z: 0.0 };
     prevData = { x: 0.0, y: 0.0, z: 0.0 };
-    /*
-    // Make sure starting result is vector 0,0,0.
-    result.x = 0.0;
-    result.y = 0.0;
-    result.z = 0.0;
-
-    // Make sure starting prev data is 0,0,0
-    prevData.x = 0.0;
-    prevData.y = 0.0;
-    prevData.z = 0.0;
-    */
 }
 
 /**
@@ -50,8 +39,6 @@ Vector3Integrator::~Vector3Integrator() {}
 void Vector3Integrator::onNewData(Vector3<double> newData, double dt_ns) {
     // Get delta time in seconds.
     double dt_s = dt_ns / 1000000000;
-
-    //static Vector3<double> prevData = { x: 0.0, y: 0.0, z: 0.0 };
 
     result.x += dt_s * ((prevData.x + newData.x) / 2.0);
     result.y += dt_s * ((prevData.y + newData.y) / 2.0);
