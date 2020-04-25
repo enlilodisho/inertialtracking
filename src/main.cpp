@@ -129,7 +129,7 @@ int main(int argc, char * argv[]) {
 void loop() {
     static int i = 0;
 
-    while (i++ < 100000) {
+    while (i++ < 40000) {
 
         BYTE fifoStatus = lsm.get_fifo_status();
         uint8_t numUnreadInFIFO = lsm.get_num_fifo_unread(fifoStatus);

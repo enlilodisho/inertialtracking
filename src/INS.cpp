@@ -75,30 +75,30 @@ void INS::loop() {
 
         queueMtx.unlock();
 
-        // Get the orientation of the device.
+        // Update orientation estimator.
         orientationEstimator.onGyroscopeData(gyroNode->x, gyroNode->y,
                 gyroNode->z, gyroNode->dt_ns);
 
-        // Transform acceleration from sensor-frame to world-frame.
+        // Get the orientation of the device.
         Quaternion orientation = orientationEstimator.getOrientation();
-        struct EulerAngles orientationAngles = orientation.toEulerAngles();
+        //printf("Orientation: %f,%f,%f,%f", orientation.w, orientation.x, orientation.y, orientation.z);
+        /*struct EulerAngles orientationAngles = orientation.toEulerAngles();
         orientationAngles.pitch *= 180/M_PI;
         orientationAngles.roll  *= 180/M_PI;
         orientationAngles.yaw   *= 180/M_PI;
+        printf(" (%f,%f,%f)", orientationAngles.pitch, orientationAngles.roll, orientationAngles.yaw);
+        */
+        //printf("\n");
         //printf("%f,%f,%f -> ", accNode->x, accNode->y, accNode->z);
 
+        // Transform acceleration from sensor-frame to world-frame.
         Quaternion qAcc(0, accNode->y, accNode->x, accNode->z);
-        printf("Orientation: %f,%f,%f,%f ", orientation.w, orientation.x, orientation.y, orientation.z);
-        printf("(%f,%f,%f)\n", orientationAngles.pitch, orientationAngles.roll, orientationAngles.yaw);
         Quaternion qAccWorld = orientation*qAcc*orientation.inverse();
-        //Quaternion qAccWorld = orientation.inverse()*qAcc*orientation;
         accNode->x = qAccWorld.y;
         accNode->y = qAccWorld.x;
         accNode->z = qAccWorld.z;
         printf("Acc: %f,%f,%f,%f -> ", qAcc.w, qAcc.x, qAcc.y, qAcc.z);
         printf("%f,%f,%f,%f\n", qAccWorld.w, qAccWorld.x, qAccWorld.y, qAccWorld.z);
-        //printf("%f,%f,%f\n", accNode->x, accNode->y, accNode->z);
-        printf("\n");
 
         delete gyroNode;
         delete accNode;
