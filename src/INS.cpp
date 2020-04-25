@@ -22,10 +22,15 @@
 #include "INS.hpp"
 #include <math.h> //temp
 
+#define LINEAR_ACC_CALIB_AMT    1000
+
 /**
  * Constructor for INS.
  */
-INS::INS() : active(false) {}
+INS::INS() : active(false) {
+    lacc_calib_counter = 0;
+    lacc_calibration = { x: 0.0, y: 0.0, z: 0.0 };
+}
 
 /**
  * Destructor for INS.
@@ -81,24 +86,70 @@ void INS::loop() {
 
         // Get the orientation of the device.
         Quaternion orientation = orientationEstimator.getOrientation();
-        //printf("Orientation: %f,%f,%f,%f", orientation.w, orientation.x, orientation.y, orientation.z);
-        /*struct EulerAngles orientationAngles = orientation.toEulerAngles();
+        /*
+        printf("Orientation: %f,%f,%f,%f", orientation.w, orientation.x, orientation.y, orientation.z);
+        struct EulerAngles orientationAngles = orientation.toEulerAngles();
         orientationAngles.pitch *= 180/M_PI;
         orientationAngles.roll  *= 180/M_PI;
         orientationAngles.yaw   *= 180/M_PI;
         printf(" (%f,%f,%f)", orientationAngles.pitch, orientationAngles.roll, orientationAngles.yaw);
+        printf("\n");
         */
-        //printf("\n");
-        //printf("%f,%f,%f -> ", accNode->x, accNode->y, accNode->z);
 
         // Transform acceleration from sensor-frame to world-frame.
         Quaternion qAcc(0, accNode->y, accNode->x, accNode->z);
         Quaternion qAccWorld = orientation*qAcc*orientation.inverse();
-        accNode->x = qAccWorld.y;
-        accNode->y = qAccWorld.x;
-        accNode->z = qAccWorld.z;
-        printf("Acc: %f,%f,%f,%f -> ", qAcc.w, qAcc.x, qAcc.y, qAcc.z);
-        printf("%f,%f,%f,%f\n", qAccWorld.w, qAccWorld.x, qAccWorld.y, qAccWorld.z);
+        //printf("Acc: %f,%f,%f,%f -> ", qAcc.w, qAcc.x, qAcc.y, qAcc.z);
+        //printf("%f,%f,%f,%f\n", qAccWorld.w, qAccWorld.x, qAccWorld.y, qAccWorld.z);
+        Vector3<double> worldAcc = { x: qAccWorld.y, y: qAccWorld.x,
+            z: qAccWorld.z };
+
+
+        // Do calibration for linear acceleration (if haven't done so yet)
+        if (lacc_calib_counter <= LINEAR_ACC_CALIB_AMT) {
+            if (lacc_calib_counter == 0) {
+                printf("[INS] DO NOT MOVE DEVICE! Calibrating linear acc...\n");
+            }
+
+            if (lacc_calib_counter == LINEAR_ACC_CALIB_AMT) {
+                lacc_calibration.x /= LINEAR_ACC_CALIB_AMT;
+                lacc_calibration.y /= LINEAR_ACC_CALIB_AMT;
+                lacc_calibration.z /= LINEAR_ACC_CALIB_AMT;
+                printf("[INS] Linear acc calibration result: %f,%f,%f\n",
+                        lacc_calibration.x, lacc_calibration.y,
+                        lacc_calibration.z);
+            } else {
+                lacc_calibration.x += worldAcc.x;
+                lacc_calibration.y += worldAcc.y;
+                lacc_calibration.z += worldAcc.z;
+            }
+            lacc_calib_counter++;
+
+            delete gyroNode;
+            delete accNode;
+            continue;
+        }
+
+        // Get linear acceleration in world-frame.
+        Vector3<double> linearAcc;
+        linearAcc.x = worldAcc.x - lacc_calibration.x;
+        linearAcc.y = worldAcc.y - lacc_calibration.y;
+        linearAcc.z = worldAcc.z - lacc_calibration.z;
+        //printf("LACC: %f,%f,%f\n", linearAcc.x, linearAcc.y, linearAcc.z);
+
+        // Get velocity by integrating lacc.
+        laccIntegrator.onNewData(linearAcc, accNode->dt_ns);
+        Vector3<double> velocity = laccIntegrator.getResult();
+        //printf("Velocity: %f,%f,%f\n", velocity.x, velocity.y, velocity.z);
+
+        // Get position by integrating velocity.
+        velIntegrator.onNewData(velocity, accNode->dt_ns);
+        Vector3<double> position = velIntegrator.getResult();
+        //printf("Position: %f,%f,%f\n", position.x, position.y, position.z);
+
+        static int i = 0;
+        printf("%d,%f,%f,%f\n", (++i), linearAcc.z, velocity.z, position.z);
+
 
         delete gyroNode;
         delete accNode;

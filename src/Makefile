@@ -15,7 +15,7 @@ LIBS=-lm -lpthread
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = LSM9DS1.o main.o INS.o OrientationEstimator.o Quaternion.o
+_OBJ = LSM9DS1.o main.o INS.o OrientationEstimator.o Quaternion.o Vector3Integrator.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 InertialTracking: $(OBJ)

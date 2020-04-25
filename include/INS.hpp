@@ -5,6 +5,8 @@
 #include <thread>
 #include <mutex>
 #include "OrientationEstimator.hpp"
+#include "utils.hpp"
+#include "Vector3Integrator.hpp"
 
 class INS {
     public:
@@ -32,6 +34,11 @@ class INS {
         std::deque<struct QueueNode*> accQueue;
 
         OrientationEstimator orientationEstimator;
+
+        int lacc_calib_counter;
+        Vector3<double> lacc_calibration;
+        Vector3Integrator laccIntegrator;
+        Vector3Integrator velIntegrator;
 };
 
 #endif /* INERTIAL_NAVIGATION_SYSTEM_HPP */

@@ -20,6 +20,7 @@
  */
 #include <iostream>
 #include <thread>
+#include "../include/utils.hpp"
 #include "../include/LSM9DS1-RPI/LSM9DS1.hpp"
 #include "../include/INS.hpp"
 
@@ -39,12 +40,6 @@
 #define SENSITIVITY_MAGNETOMETER_12  0.00043
 #define SENSITIVITY_MAGNETOMETER_16  0.00058
 
-template<class VECTOR3_T>
-struct Vector3 {
-    VECTOR3_T x;
-    VECTOR3_T y;
-    VECTOR3_T z;
-};
 static Vector3<double> gyroCalibration;
 //static struct SensorData gyroCalibration;
 
@@ -110,7 +105,6 @@ int main(int argc, char * argv[]) {
     printf("Gyro calibration result: %f,%f,%f\n",
             gyroCalibration.x, gyroCalibration.y, gyroCalibration.z);
 
-    std::cout << "DONE SETTING UP EVERYTHING!\n";
 
     // Start the INS
     ins.start();
