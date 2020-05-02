@@ -147,9 +147,8 @@ void INS::loop() {
         Vector3<double> position = velIntegrator.getResult();
         //printf("Position: %f,%f,%f\n", position.x, position.y, position.z);
 
-        static int i = 0;
-        printf("%d,%f,%f,%f\n", (++i), linearAcc.z, velocity.z, position.z);
-
+        //static int i = 0;
+        //printf("%d,%f,%f,%f\n", (++i), linearAcc.z, velocity.z, position.z);
 
         delete gyroNode;
         delete accNode;
@@ -193,4 +192,6 @@ void INS::onGyroscopeData(double pitch, double roll, double yaw, double dt_ns) {
 /**
  * Event Handler for when received magnetometer data.
  */
-void INS::onMagnetometerData(double x, double y, double z, double dt_ns) {}
+void INS::onMagnetometerData(double x, double y, double z, double dt_ns) {
+    printf("%f,%f,%f\n", x, y, z);
+}
